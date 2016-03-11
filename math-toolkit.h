@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>
+#include <emmintrin.h>
 
 static inline
 void normalize(double *v)
@@ -61,10 +62,17 @@ void cross_product(const double *v1, const double *v2, double *out)
 static inline
 double dot_product(const double *v1, const double *v2)
 {
-    double dp = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
-    /*for (int i = 0; i < 3; i++)
-        dp += v1[i] * v2[i];*/
-    return dp;
+    double * dp = (double *) malloc( 2 * sizeof( double));
+    __m128d m128_v1 = _mm_set_pd( v1[0], v1[1]);
+    __m128d m128_v2 = _mm_set_pd( v2[0], v2[1]);
+    __m128d m128_d1 = _mm_set_pd( v1[2], 0);
+    __m128d m128_d2 = _mm_set_pd( v2[2], 0);
+    __m128d m128_mul_v1v2 = _mm_mul_pd( m128_v1, m128_v2);
+    __m128d m128_mul_d1d2 = _mm_mul_pd( m128_d1, m128_d2);
+    __m128d m128_add = _mm_add_pd( m128_mul_v1v2, m128_mul_d1d2);
+    _mm_store_pd( dp, m128_add);
+
+    return *dp + *(dp+1);
 }
 
 static inline
