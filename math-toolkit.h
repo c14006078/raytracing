@@ -6,6 +6,9 @@
 #include <assert.h>
 #include <emmintrin.h>
 
+static double result[2];
+static __m128d A,B,C;
+
 static inline
 void normalize(double *v)
 {
@@ -62,7 +65,12 @@ void cross_product(const double *v1, const double *v2, double *out)
 static inline
 double dot_product(const double *v1, const double *v2)
 {
-    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+  A = _mm_load_pd( v1);
+  B = _mm_load_pd( v2);
+  C = _mm_mul_pd ( A, B);
+  _mm_store_pd( result, C);
+
+  return result[0] + result[1] + v1[2] * v2[2];
 }
 
 static inline
