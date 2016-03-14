@@ -65,8 +65,8 @@ void cross_product(const double *v1, const double *v2, double *out)
 static inline
 double dot_product(const double *v1, const double *v2)
 {
-  A = _mm_load_pd( v1);
-  B = _mm_load_pd( v2);
+  A = _mm_loadu_pd( v1);
+  B = _mm_loadu_pd( v2);
   C = _mm_mul_pd ( A, B);
   _mm_store_pd( result, C);
 
