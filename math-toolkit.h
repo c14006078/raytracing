@@ -6,7 +6,6 @@
 #include <assert.h>
 #include <emmintrin.h>
 
-static double result[2];
 static __m128d A,B,C;
 
 static inline
@@ -65,12 +64,12 @@ void cross_product(const double *v1, const double *v2, double *out)
 static inline
 double dot_product(const double *v1, const double *v2)
 {
+  
   A = _mm_loadu_pd( v1);
   B = _mm_loadu_pd( v2);
   C = _mm_mul_pd ( A, B);
-  _mm_store_pd( result, C);
-
-  return result[0] + result[1] + v1[2] * v2[2];
+  
+  return C[0] + C[1] + v1[2] * v2[2];
 }
 
 static inline
