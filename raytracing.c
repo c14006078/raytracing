@@ -22,8 +22,6 @@ static int raySphereIntersection(const point3 ray_e,
                                  const sphere *sph,
                                  intersection *ip, double *t1)
 {
-    _mm_prefetch( ray_e, _MM_HINT_NTA);
-    _mm_prefetch( ray_d, _MM_HINT_NTA);
     point3 l;
     subtract_vector(sph->center, ray_e, l);
     double s = dot_product(l, ray_d);
@@ -54,14 +52,10 @@ static int rayRectangularIntersection(const point3 ray_e,
                                       rectangular *rec,
                                       intersection *ip, double *t1)
 {
-    _mm_prefetch( ray_e, _MM_HINT_NTA);
-    _mm_prefetch( ray_d, _MM_HINT_NTA);
     point3 e01, e03, p;
     subtract_vector(rec->vertices[1], rec->vertices[0], e01);
     subtract_vector(rec->vertices[3], rec->vertices[0], e03);
     
-    _mm_prefetch( e03, _MM_HINT_NTA);
-    _mm_prefetch( e01, _MM_HINT_NTA);
     cross_product(ray_d, e03, p);
 
     double det = dot_product(e01, p);
@@ -216,9 +210,6 @@ static void refraction(point3 t, const point3 I, const point3 N,
     if (k < 0.0 || n2 <= 0.0)
         t[0] = t[1] = t[2] = 0.0;
     else {
-    _mm_prefetch( t, _MM_HINT_NTA);
-    _mm_prefetch( I, _MM_HINT_NTA);
-    _mm_prefetch( N, _MM_HINT_NTA);
         point3 tmp;
         multiply_vector(I, eta, t);
         multiply_vector(N, eta * dot_NI + sqrt(k), tmp);
@@ -302,10 +293,6 @@ static void rayConstruction(point3 d, const point3 u, const point3 v,
                             unsigned int height)
 {
 
-    _mm_prefetch( d, _MM_HINT_NTA);
-    _mm_prefetch( u, _MM_HINT_NTA);
-    _mm_prefetch( v, _MM_HINT_NTA);
-    _mm_prefetch( w, _MM_HINT_NTA);
     double xmin = -0.0175;
     double ymin = -0.0175;
     double xmax =  0.0175;
