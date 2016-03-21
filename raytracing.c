@@ -56,7 +56,7 @@ static int rayRectangularIntersection(const point3 ray_e,
     point3 e01, e03, p;
     subtract_vector(rec->vertices[1], rec->vertices[0], e01);
     subtract_vector(rec->vertices[3], rec->vertices[0], e03);
-    
+
     cross_product(ray_d, e03, p);
 
     double det = dot_product(e01, p);
@@ -123,7 +123,7 @@ static int rayRectangularIntersection(const point3 ray_e,
         multiply_vector(ip->normal, -1, ip->normal);
     multiply_vector(ray_d, *t1, ip->point);
     add_vector(ray_e, ip->point, ip->point);
-    
+
     return 1;
 }
 
@@ -319,10 +319,22 @@ static void rayConstruction(point3 d, const point3 u, const point3 v,
     normalize(d);
 }
 
-/*static void calculateBasisVectors(point3 u, point3 v, point3 w,
+static void calculateBasisVectors(point3 u, point3 v, point3 w,
                                   const viewpoint *view)
 {
-}*
+    /* w  */
+    COPY_POINT3(w, view->vpn);
+    normalize(w);
+
+    /* u = (t x w) / (|t x w|) */
+    cross_product(w, view->vup, u);
+    normalize(u);
+
+    /* v = w x u */
+    cross_product(u, w, v);
+
+    normalize(v);
+}
 
 /* @brief protect color value overflow */
 static void protect_color_overflow(color c)
@@ -447,32 +459,15 @@ void raytracing( void * ray)
 {
     rays * r = ( rays *) ray;
     point3 u, v, w, d;
-    /*printf("1: %lf\n", r->background_color[0]);
-    printf("2: %lf\n", r->view->vpn[0]);*/
     color object_color = { 0.0, 0.0, 0.0 };
-    /*COPY_POINT3(w, r->view->vpn);*/
     /* calculate u, v, w */
-    /*calculateBasisVectors(u, v, w, r->view);*/
-
-    /* w  */
-    COPY_POINT3(w, r->view->vpn);
-    normalize(w);
-
-    /* u = (t x w) / (|t x w|) */
-    cross_product(w, r->view->vup, u);
-    normalize(u);
-
-    /* v = w x u */
-    cross_product(u, w, v);
-
-    normalize(v);
-
+    calculateBasisVectors(u, v, w, r->view);
 
     idx_stack stk;
 
     int factor = sqrt(SAMPLES);
     for (int j =r->tid ; j < r->height; j = j + r->tnum) {
-        for (int i = r->tid ; i < r->width; i = i + r->tnum) {
+        for (int i = 0; i < r->width; i++) {
             double R = 0, G = 0, B = 0;
             /* MSAA */
             for (int s = 0; s < SAMPLES; s++) {
@@ -504,19 +499,19 @@ void raytracing( void * ray)
 
 rays * new_rays(uint8_t *pixels, double *background_color,
                 rectangular_node rectangulars, sphere_node spheres,
-                light_node lights,const viewpoint view,
+                light_node lights,const viewpoint *view,
                 int width, int height, int tid, int tnum)
 {
-	rays * r =  (rays *) malloc ( sizeof( rays));
-	r->pixels = pixels;
-	r->background_color =  background_color;
-  r->rectangulars = rectangulars;
-  r->spheres = spheres;
-  r->lights = lights;
-  r->view = view;
-  r->width = width;
-  r->height = height;
-  r->tid = tid;
-  r->tnum = tnum;
-  return r;
+    rays * r =  (rays *) malloc ( sizeof( rays));
+    r->pixels = pixels;
+    r->background_color =  background_color;
+    r->rectangulars = rectangulars;
+    r->spheres = spheres;
+    r->lights = lights;
+    r->view = view;
+    r->width = width;
+    r->height = height;
+    r->tid = tid;
+    r->tnum = tnum;
+    return r;
 }
