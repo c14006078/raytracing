@@ -55,18 +55,15 @@ int main()
     clock_gettime(CLOCK_REALTIME, &start);
 
     pthread_t * tid = ( pthread_t *) malloc ( threadnum * sizeof( pthread_t));
-     
-    viewpoint * vp = (viewpoint *) malloc( sizeof(viewpoint));
-    COPY_POINT3(vp->vrp,view.vrp);
-    COPY_POINT3(vp->vpn,view.vpn);
-    COPY_POINT3(vp->vup,view.vup);
-
+    /*const viewpoint * vpt = &view;
+    printf("fuck i go to\n");
+    printf("vpt->view->vpn[0] = %lf\n",vpt->vpn[0]);*/
     int k;
     rays** pr = (rays **) malloc( threadnum * sizeof(  rays * ));
     for( k = 0; k < threadnum; k++){
         /*viewpoint * vp = (viewpoint *) malloc( sizeof(viewpoint));*/
         pr[k] = new_rays( pixels, background,
-               rectangulars, spheres, lights, vp, ROWS, COLS, k, threadnum);
+               rectangulars, spheres, lights, &view, ROWS, COLS, k, threadnum);
         pthread_create( tid+k, NULL, (void *) &raytracing, (void *) pr+k);
     }
 
