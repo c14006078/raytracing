@@ -1,6 +1,9 @@
 #ifndef __RAY_OBJECTS_H
 #define __RAY_OBJECTS_H
 
+/* # is transfer to string in macro  https://gcc.gnu.org/onlinedocs/cpp/Stringification.html */
+
+/* ## https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html */
 #define DECLARE_OBJECT(name) \
     struct __##name##_node; \
     typedef struct __##name##_node *name##_node; \
