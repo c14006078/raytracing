@@ -1,9 +1,28 @@
 #ifndef __RAY_OBJECTS_H
 #define __RAY_OBJECTS_H
 
-/* # is transfer to string in macro  https://gcc.gnu.org/onlinedocs/cpp/Stringification.html */
+/* # is can covert a macro argument into string constant
 
-/* ## https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html */
+example:
+
+#define str(x) #x
+
+str(string)
+===> string
+
+https://gcc.gnu.org/onlinedocs/cpp/Stringification.html */
+
+/* ## it just like a adhesives, it can make "NAME" + "_command" = "NAME_command"
+
+example:
+
+#define COMMAND( NAME) { #NAME , NAME ## _command }
+
+COMMAND( I_want_be_with_u )
+===> { "I_want_be_with_u" , I_want_be_with_u_command }
+
+
+https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html */
 #define DECLARE_OBJECT(name) \
     struct __##name##_node; \
     typedef struct __##name##_node *name##_node; \
