@@ -48,20 +48,22 @@ int main()
 
     int threadnum;
     printf( " please input the thread num:");
-    scanf( " %d",  &threadnum);
+    scanf( "%d",  &threadnum);
 
     printf("\n\n# Rendering scene\n");
     /* do the ray tracing with the given geometry */
     clock_gettime(CLOCK_REALTIME, &start);
 
     pthread_t * tid = ( pthread_t *) malloc ( threadnum * sizeof( pthread_t));
+
     int k;
-    rays* pr = (rays *) malloc( threadnum * sizeof( rays));
-    pr = new_rays( pixels, background, rectangulars,
-                      spheres, lights, &view, ROWS, COLS, k, threadnum);
+    rays** pr = (rays **) malloc( threadnum * sizeof(  rays * ));
     for( k = 0; k < threadnum; k++) {
-        pthread_create( &tid[k], NULL, (void *) &raytracing, (void *) pr);
+       pr[k] = new_rays( pixels, background,
+                  rectangulars, spheres, lights, &view, ROWS, COLS, k, threadnum);
+       pthread_create( &tid[k], NULL, (void *) &raytracing, (void *) pr[k]);
     }
+
 
     for( k = 0; k < threadnum; k++) {
         pthread_join( tid[k], NULL);

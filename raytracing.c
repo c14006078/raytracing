@@ -497,7 +497,7 @@ void raytracing( void * ray)
     pthread_exit(0);
 }
 
-rays * new_rays(uint8_t *pixels, double *background_color,
+rays *new_rays(uint8_t *pixels, double *background_color,
                 rectangular_node rectangulars, sphere_node spheres,
                 light_node lights,const viewpoint *view,
                 int width, int height, int tid, int tnum)
