@@ -2,7 +2,7 @@ EXEC = raytracing
 .PHONY: all
 all: $(EXEC)
 
-CC ?= gcc
+CC = gcc
 CFLAGS = \
 	-std=gnu99 -Wall -O0 -g\
   -D__forceinline="__attribute__((always_inline))"
